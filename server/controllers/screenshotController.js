@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import Screenshot from "../models/Screenshot.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { normalizeTags } from "../utils/fileHelpers.js";
@@ -108,10 +110,8 @@ export const searchScreenshots = asyncHandler(async (req, res) => {
   const sort = buildSortQuery(req.query);
 
   const filter = {
+    owner: req.user._id,
     $and: [
-      {
-        owner: req.user._id
-      },
       {
         $or: [
           { extractedText: safeRegex },
@@ -163,6 +163,12 @@ export const searchScreenshots = asyncHandler(async (req, res) => {
 });
 
 export const getScreenshotById = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    const error = new Error("Invalid screenshot id.");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const screenshot = await Screenshot.findOne({
     _id: req.params.id,
     owner: req.user._id
@@ -181,6 +187,12 @@ export const getScreenshotById = asyncHandler(async (req, res) => {
 });
 
 export const updateScreenshot = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    const error = new Error("Invalid screenshot id.");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const tags = normalizeTags(req.body.tags);
   const existingScreenshot = await Screenshot.findOne({
     _id: req.params.id,
@@ -209,6 +221,12 @@ export const updateScreenshot = asyncHandler(async (req, res) => {
 });
 
 export const deleteScreenshot = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    const error = new Error("Invalid screenshot id.");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const screenshot = await Screenshot.findOneAndDelete({
     _id: req.params.id,
     owner: req.user._id
@@ -229,6 +247,12 @@ export const deleteScreenshot = asyncHandler(async (req, res) => {
 });
 
 export const getScreenshotImage = asyncHandler(async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    const error = new Error("Invalid screenshot id.");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const screenshot = await Screenshot.findOne({
     _id: req.params.id,
     owner: req.user._id

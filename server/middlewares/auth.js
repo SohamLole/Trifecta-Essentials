@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import User from "../models/User.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { verifyAuthToken } from "../utils/authHelpers.js";
@@ -26,6 +28,12 @@ export const requireAuth = asyncHandler(async (req, _res, next) => {
   try {
     payload = verifyAuthToken(token);
   } catch (_error) {
+    const error = new Error("Invalid or expired authentication token.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (!mongoose.isValidObjectId(payload.sub)) {
     const error = new Error("Invalid or expired authentication token.");
     error.statusCode = 401;
     throw error;

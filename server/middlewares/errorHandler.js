@@ -7,6 +7,15 @@ export const notFoundHandler = (req, _res, next) => {
 };
 
 export const errorHandler = (error, _req, res, _next) => {
+  if (error?.code === 11000) {
+    const duplicateField = Object.keys(error.keyPattern || error.keyValue || {})[0] || "field";
+
+    return res.status(409).json({
+      success: false,
+      message: `${duplicateField} already exists.`
+    });
+  }
+
   const statusCode =
     error.statusCode ||
     error.status ||

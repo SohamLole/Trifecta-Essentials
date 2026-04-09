@@ -8,8 +8,18 @@ const startServer = async () => {
   try {
     await connectDatabase();
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`SnapSense API is running on port ${PORT}`);
+    });
+
+    server.on("error", (error) => {
+      if (error.code === "EADDRINUSE") {
+        console.error(`Failed to start server: Port ${PORT} is already in use.`);
+      } else {
+        console.error("Failed to start server:", error.message);
+      }
+
+      process.exit(1);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);
