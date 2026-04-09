@@ -3,12 +3,11 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { fileURLToPath } from "url";
 
-import { getStore } from "@netlify/blobs";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadsDirectory = path.join(__dirname, "..", "uploads");
 const imageStoreName = "screenshot-images";
+let cachedGetStore = null;
 
 const getExtension = (originalName = "", mimeType = "") => {
   const explicitExtension = path.extname(originalName).toLowerCase();
@@ -25,6 +24,15 @@ const getExtension = (originalName = "", mimeType = "") => {
 };
 
 const isNetlifyRuntime = () => process.env.NETLIFY === "true" || Boolean(process.env.CONTEXT);
+
+const getBlobStore = async () => {
+  if (!cachedGetStore) {
+    const { getStore } = await import("@netlify/blobs");
+    cachedGetStore = getStore;
+  }
+
+  return cachedGetStore(imageStoreName);
+};
 
 const buildBlobKey = (originalName, mimeType) =>
   `${new Date().toISOString().slice(0, 10)}/${randomUUID()}${getExtension(originalName, mimeType)}`;
@@ -64,7 +72,7 @@ export const saveImage = async ({ buffer, mimeType, originalName }) => {
 
   if (isNetlifyRuntime()) {
     const key = buildBlobKey(originalName, mimeType);
-    const store = getStore(imageStoreName);
+    const store = await getBlobStore();
 
     await store.set(key, buffer, {
       metadata: {
@@ -94,7 +102,7 @@ export const deleteStoredImage = async (imageRef) => {
 
   if (parsed.provider === "blob") {
     try {
-      const store = getStore(imageStoreName);
+      const store = await getBlobStore();
       await store.delete(parsed.key);
     } catch (error) {
       console.warn(`Failed to remove blob image ${parsed.key}:`, error.message);
@@ -118,7 +126,7 @@ export const readStoredImage = async (imageRef) => {
   const parsed = parseStoredImageRef(imageRef);
 
   if (parsed.provider === "blob") {
-    const store = getStore(imageStoreName);
+    const store = await getBlobStore();
     const entry = await store.getWithMetadata(parsed.key, {
       type: "arrayBuffer"
     });
