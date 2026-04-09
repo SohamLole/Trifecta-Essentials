@@ -1,0 +1,113 @@
+.appShell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto 28px;
+  padding: 18px 22px;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 48px rgba(18, 32, 51, 0.08);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.kicker {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #6b7a90;
+}
+
+.brand {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.userChip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: rgba(18, 32, 51, 0.06);
+}
+
+.userName,
+.userEmail {
+  margin: 0;
+}
+
+.userName {
+  font-weight: 700;
+}
+
+.userEmail {
+  font-size: 0.82rem;
+  color: #617086;
+}
+
+.logoutButton {
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #122033;
+  color: #ffffff;
+}
+
+.navLink {
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: #41526a;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.navLink:hover,
+.navLinkActive {
+  background: #122033;
+  color: #ffffff;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 720px) {
+  .appShell {
+    padding: 16px;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .headerActions {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}

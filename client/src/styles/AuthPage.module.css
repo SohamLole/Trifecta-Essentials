@@ -1,0 +1,132 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 520px);
+  gap: 28px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.brandPanel {
+  padding: 34px;
+  border-radius: 32px;
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, rgba(8, 47, 73, 0.94), rgba(18, 32, 51, 0.95)),
+    linear-gradient(135deg, #0ea5e9, #facc15);
+  box-shadow: 0 28px 60px rgba(18, 32, 51, 0.16);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.brandPanel h1 {
+  margin: 0 0 16px;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.02;
+}
+
+.brandPanel p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.card {
+  display: grid;
+  gap: 18px;
+  padding: 28px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  box-shadow: 0 22px 54px rgba(18, 32, 51, 0.1);
+}
+
+.modeToggle {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 6px;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.modeToggle button {
+  border: 0;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: transparent;
+  color: #586980;
+}
+
+.activeMode {
+  background: #122033 !important;
+  color: #ffffff !important;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.form label {
+  display: grid;
+  gap: 8px;
+  color: #425368;
+  font-weight: 600;
+}
+
+.form input {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(18, 32, 51, 0.12);
+  background: #ffffff;
+}
+
+.submitButton {
+  border: 0;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: #122033;
+  color: #ffffff;
+}
+
+.submitButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #6a7a90;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(18, 32, 51, 0.12);
+}
+
+.googleWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.helperText {
+  margin: 0;
+  color: #586980;
+}
+
+@media (max-width: 920px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+}

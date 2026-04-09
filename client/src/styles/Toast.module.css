@@ -1,0 +1,36 @@
+.toastStack {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
+  display: grid;
+  gap: 12px;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  box-shadow: 0 18px 42px rgba(18, 32, 51, 0.16);
+  color: #122033;
+  background: #ffffff;
+  border: 1px solid rgba(18, 32, 51, 0.06);
+}
+
+.success {
+  border-left: 5px solid #2f9e44;
+}
+
+.error {
+  border-left: 5px solid #d9480f;
+}
+
+.dismissButton {
+  border: 0;
+  background: transparent;
+  color: #6b7a90;
+}

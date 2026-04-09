@@ -1,0 +1,24 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.easy {
+  color: #2b6e3e;
+  background: #dcfce7;
+}
+
+.medium {
+  color: #a16207;
+  background: #fef3c7;
+}
+
+.hard {
+  color: #b91c1c;
+  background: #fee2e2;
+}

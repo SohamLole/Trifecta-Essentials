@@ -1,0 +1,44 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.defaultTag {
+  color: #405266;
+  background: #e8edf3;
+}
+
+.bug {
+  color: #a61e4d;
+  background: #ffe3ec;
+}
+
+.ui {
+  color: #1864ab;
+  background: #dbeafe;
+}
+
+.notes {
+  color: #8f5b00;
+  background: #fff3bf;
+}
+
+.auth {
+  color: #5f3dc4;
+  background: #ebe4ff;
+}
+
+.api {
+  color: #087f5b;
+  background: #d3f9d8;
+}
+
+.general {
+  color: #495057;
+  background: #f1f3f5;
+}
