@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { getStoredAuthToken } from "../services/api.js";
+import { AUTH_EXPIRED_EVENT, getStoredAuthToken } from "../services/api.js";
 import {
   getCurrentUser,
   login,
@@ -36,6 +36,20 @@ export const AuthProvider = ({ children }) => {
     };
 
     bootstrapAuth();
+  }, []);
+
+  useEffect(() => {
+    const handleExpiredAuth = () => {
+      logoutUser();
+      setUser(null);
+      setAuthLoading(false);
+    };
+
+    window.addEventListener(AUTH_EXPIRED_EVENT, handleExpiredAuth);
+
+    return () => {
+      window.removeEventListener(AUTH_EXPIRED_EVENT, handleExpiredAuth);
+    };
   }, []);
 
   const value = {

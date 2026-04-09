@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_BASE_URL || "/api";
 
 export const AUTH_TOKEN_KEY = "snapsense_auth_token";
+export const AUTH_EXPIRED_EVENT = "snapsense:auth-expired";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -40,5 +41,27 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || "";
+    const isAuthSubmission =
+      requestUrl.includes("/auth/login") ||
+      requestUrl.includes("/auth/signup") ||
+      requestUrl.includes("/auth/google");
+
+    if (status === 401 && !isAuthSubmission) {
+      setStoredAuthToken("");
+
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event(AUTH_EXPIRED_EVENT));
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

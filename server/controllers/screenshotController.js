@@ -1,10 +1,11 @@
 import Screenshot from "../models/Screenshot.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { normalizeTags } from "../utils/fileHelpers.js";
 import {
-  deleteLocalFile,
-  getUploadAbsolutePath,
-  normalizeTags
-} from "../utils/fileHelpers.js";
+  deleteStoredImage,
+  readStoredImage,
+  saveImage
+} from "../utils/imageStorage.js";
 import { extractTextFromImage } from "../utils/ocrService.js";
 import { escapeRegex, parsePagination } from "../utils/queryHelpers.js";
 import analyzeIssue, { buildSortQuery } from "../utils/issueAnalyzer.js";
@@ -21,7 +22,7 @@ export const uploadScreenshot = asyncHandler(async (req, res) => {
   let ocrWarning = null;
 
   try {
-    extractedText = await extractTextFromImage(req.file.path);
+    extractedText = await extractTextFromImage(req.file.buffer, req.file.mimetype);
   } catch (error) {
     console.error("OCR processing failed:", error.message);
     ocrWarning = "OCR failed, so the screenshot was saved without extracted text.";
@@ -30,17 +31,27 @@ export const uploadScreenshot = asyncHandler(async (req, res) => {
   const tags = generateTags(extractedText);
   const issueAnalysis = analyzeIssue(extractedText, tags);
   let screenshot;
+  let imageUrl = "";
 
   try {
+    imageUrl = await saveImage({
+      buffer: req.file.buffer,
+      mimeType: req.file.mimetype,
+      originalName: req.file.originalname
+    });
+
     screenshot = await Screenshot.create({
       owner: req.user._id,
-      imageUrl: `/uploads/${req.file.filename}`,
+      imageUrl,
       extractedText,
       tags,
       ...issueAnalysis
     });
   } catch (error) {
-    await deleteLocalFile(`/uploads/${req.file.filename}`);
+    if (imageUrl) {
+      await deleteStoredImage(imageUrl);
+    }
+
     throw error;
   }
 
@@ -122,7 +133,7 @@ export const searchScreenshots = asyncHandler(async (req, res) => {
   };
 
   if (tag) {
-    filter.$and[filter.$and.length - 1] = {
+    filter.$and.push({
       $or: [
         { tags: tag },
         { issueCategory: tag },
@@ -131,7 +142,7 @@ export const searchScreenshots = asyncHandler(async (req, res) => {
         { "issues.detailedTag": tag },
         { "issues.tagLabel": tag }
       ]
-    };
+    });
   }
 
   const [items, total] = await Promise.all([
@@ -209,7 +220,7 @@ export const deleteScreenshot = asyncHandler(async (req, res) => {
     throw error;
   }
 
-  await deleteLocalFile(screenshot.imageUrl);
+  await deleteStoredImage(screenshot.imageUrl);
 
   res.status(200).json({
     success: true,
@@ -229,5 +240,14 @@ export const getScreenshotImage = asyncHandler(async (req, res) => {
     throw error;
   }
 
-  res.sendFile(getUploadAbsolutePath(screenshot.imageUrl));
+  const image = await readStoredImage(screenshot.imageUrl);
+
+  if (!image) {
+    const error = new Error("Stored screenshot image not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  res.setHeader("Content-Type", image.contentType);
+  res.status(200).send(image.buffer);
 });
