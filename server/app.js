@@ -19,10 +19,18 @@ const apiLimiter = rateLimit({
   legacyHeaders: false
 });
 
-const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const defaultAllowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+
+const allowedOrigins = Array.from(
+  new Set(
+    [process.env.CLIENT_URL, process.env.CLIENT_URLS]
+      .filter(Boolean)
+      .flatMap((value) => value.split(","))
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+      .concat(defaultAllowedOrigins)
+  )
+);
 
 app.use(
   cors({
