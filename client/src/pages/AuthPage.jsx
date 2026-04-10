@@ -171,7 +171,15 @@ const AuthPage = () => {
 
         {googleClientId ? (
           <div className={styles.googleWrap}>
-            <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => showToast("Google sign-in failed.", "error")} />
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() =>
+                showToast(
+                  "Google sign-in failed. Check the OAuth client origin settings and try again.",
+                  "error"
+                )
+              }
+            />
           </div>
         ) : (
           <p className={styles.helperText}>

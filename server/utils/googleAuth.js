@@ -17,10 +17,16 @@ export const verifyGoogleCredential = async (credential) => {
     throw error;
   }
 
-  const ticket = await getGoogleClient().verifyIdToken({
-    idToken: credential,
-    audience: process.env.GOOGLE_CLIENT_ID
-  });
+  try {
+    const ticket = await getGoogleClient().verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
 
-  return ticket.getPayload();
+    return ticket.getPayload();
+  } catch (_error) {
+    const error = new Error("Google credential verification failed.");
+    error.statusCode = 401;
+    throw error;
+  }
 };
